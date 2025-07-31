@@ -1,5 +1,4 @@
-// Khanya's code
-
+// backend/routes/leave.js — ES Module setup
 import express from 'express';
 import {
   getAllLeaveRequests,
@@ -11,19 +10,19 @@ import {
 
 const router = express.Router();
 
-// GET all leave requests
+// 🔹 GET all leave requests
 router.get('/', getAllLeaveRequests);
 
-// GET specific leave request by ID
+// 🔹 GET specific leave request by ID
 router.get('/:id', getLeaveRequestById);
 
-// POST a new leave request
+// 🔹 POST a new leave request
 router.post('/', createLeaveRequest);
 
-// PUT to approve/decline/update status
+// 🔹 PUT to approve/decline/update status
 router.put('/:id', updateLeaveRequestStatus);
 
-// DELETE request
+// 🔹 DELETE a leave request
 router.delete('/:id', deleteLeaveRequest);
 
 export default router;
