@@ -1,0 +1,105 @@
+{
+    "employeeInformation": [
+        {
+            "employeeId": 1,
+            "name": "Sibongile Nkosi",
+            "position": "Software Engineer",
+            "department": "Development",
+            "salary": 70000,
+            "employmentHistory": "Joined in 2015, promoted to Senior in 2018",
+            "email": "sibongile.nkosi@moderntech.com",
+            "contact": "036-774-1976"
+            
+        },
+        {
+            "employeeId": 2,
+            "name": "Lungile Moyo",
+            "position": "HR Manager",
+            "department": "HR",
+            "salary": 80000,
+            "employmentHistory": "Joined in 2013, promoted to Manager in 2017",
+            "email": "lungile.moyo@moderntech.com",
+            "contact": "056-648-2254"
+        },
+        {
+            "employeeId": 3,
+            "name": "Thabo Molefe",
+            "position": "Quality Analyst",
+            "department": "QA",
+            "salary": 55000,
+            "employmentHistory": "Joined in 2018",
+            "email": "thabo.molefe@moderntech.com",
+            "contact": "012-369-9512"
+        },
+        {
+            "employeeId": 4,
+            "name": "Keshav Naidoo",
+            "position": "Sales Representative",
+            "department": "Sales",
+            "salary": 60000,
+            "employmentHistory": "Joined in 2020",
+            "email": "keshav.naidoo@moderntech.com",
+            "contact": "044-235-7894"
+        },
+        {
+            "employeeId": 5,
+            "name": "Zanele Khumalo",
+            "position": "Marketing Specialist",
+            "department": "Marketing",
+            "salary": 58000,
+            "employmentHistory": "Joined in 2019",
+            "email": "zanele.khumalo@moderntech.com",
+            "contact": "045-154-9126"
+        },
+        {
+            "employeeId": 6,
+            "name": "Sipho Zulu",
+            "position": "UI/UX Designer",
+            "department": "Design",
+            "salary": 65000,
+            "employmentHistory": "Joined in 2016",
+            "email": "sipho.zulu@moderntech.com",
+            "contact": "016-666-0184"
+        },
+        {
+            "employeeId": 7,
+            "name": "Naledi Moeketsi",
+            "position": "DevOps Engineer",
+            "department": "IT",
+            "salary": 72000,
+            "employmentHistory": "Joined in 2017",
+            "email": "naledi.moeketsi@moderntech.com",
+            "contact": "012-454-0177"
+        },
+        {
+            "employeeId": 8,
+            "name": "Farai Gumbo",
+            "position": "Content Strategist",
+            "department": "Marketing",
+            "salary": 56000,
+            "employmentHistory": "Joined in 2021",
+            "email": "farai.gumbo@moderntech.com",
+            "contact": "045-155-0126"
+        },
+        {
+            "employeeId": 9,
+            "name": "Karabo Dlamini",
+            "position": "Accountant",
+            "department": "Finance",
+            "salary": 62000,
+            "employmentHistory": "Joined in 2018",
+            "email": "karabo.dlamini@moderntech.com",
+            "contact": "030-555-0198"
+        },
+        {
+            "employeeId": 10,
+            "name": "Fatima Patel",
+            "position": "Customer Support Lead",
+            "department": "Support",
+            "salary": 58000,
+            "employmentHistory": "Joined in 2016",
+            "email": "fatima.patel@moderntech.com",
+            "contact": "022-555-0143 "
+        }
+    ]
+}
