@@ -92,6 +92,8 @@ router.beforeEach((to, from, next) => {
       return next('/unauthorized')
     }
 
+
+    
     const userRole = Number(user.role_id)
     if (to.meta.role_id && !to.meta.role_id.includes(userRole)) {
       console.warn('Access denied for role_id:', userRole, 'on route:', to.path)
