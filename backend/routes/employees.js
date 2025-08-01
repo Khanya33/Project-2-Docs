@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../config/db.js';
+import validator from 'validator';  // Added for input validation
 
 const router = express.Router();
 
@@ -30,13 +31,12 @@ router.get('/', async (req, res) => {
         e.full_name AS employee_name,
         u.username AS job_title,
         d.name AS team,
-        p.base_salary,
+        e.salary AS base_salary,          -- salary is now in employees table
         e.email AS email_address,
         e.contact_number AS mobile
       FROM employees e
       LEFT JOIN users u ON e.user_id = u.id
       LEFT JOIN departments d ON e.department_id = d.id
-      LEFT JOIN payroll p ON e.id = p.employee_id
     `);
     const enrichedRows = rows.map(emp => ({
       ...emp,
@@ -58,11 +58,10 @@ router.get('/admin', async (req, res) => {
         e.id, e.full_name, e.email,
         u.role AS user_role,
         d.name AS department,
-        p.base_salary
+        e.salary AS base_salary          -- salary is now in employees table
       FROM employees e
       LEFT JOIN users u ON e.user_id = u.id
       LEFT JOIN departments d ON e.department_id = d.id
-      LEFT JOIN payroll p ON e.id = p.employee_id
     `);
     const mappedEmployees = rows.map(emp => ({
       id: emp.id,
@@ -103,6 +102,50 @@ router.post('/', async (req, res) => {
     res.status(201).json({ id: result.insertId });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// 🔹 Update employee details with validation
+router.post('/update', async (req, res) => {
+  const {
+    id,
+    email,
+    contact_number,
+    address,
+    department_id,
+    employment_type,
+    salary
+  } = req.body;
+
+  // Basic validation
+  if (!id || typeof id !== 'number') {
+    return res.status(400).json({ error: 'Invalid or missing employee ID' });
+  }
+
+  if (email && !validator.isEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
+  if (salary !== undefined && (isNaN(salary) || Number(salary) < 0)) {
+    return res.status(400).json({ error: 'Salary must be a positive number' });
+  }
+
+  try {
+    const [result] = await db.execute(
+      `UPDATE employees
+       SET email = ?, contact_number = ?, address = ?, department_id = ?, employment_type = ?, salary = ?
+       WHERE id = ?`,
+      [email, contact_number, address, department_id, employment_type, salary, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    res.status(500).json({ error: 'Failed to update employee' });
   }
 });
 

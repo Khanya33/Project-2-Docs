@@ -1,27 +1,31 @@
-// backend/controllers/leaveController.js — ES Module setup
-import db from '../config/db.js';
-
-// 🔹 GET all leave requests
+//Avelile
+// backend/controllers/leaveController.js
+import  pool from '../config/db.js';
+// :large_blue_diamond: GET all leave requests (with employee + reviewer info)
 export const getAllLeaveRequests = async (req, res) => {
   try {
-    const [rows] = await db.query(`
+    const [rows] = await pool.query(`
       SELECT
-        employees.full_name AS employee_name,
-        leave_requests.leave_type,
-        leave_requests.start_date,
-        leave_requests.end_date,
-        leave_requests.status,
-        leave_requests.submitted_at,
-        reviewers.username AS reviewed_by
-      FROM leave_requests
-      JOIN employees ON leave_requests.employee_id = employees.id
-      LEFT JOIN users AS reviewers ON leave_requests.reviewed_by = reviewers.id;
+        lr.id,
+        e.full_name AS employee_name,
+        lr.leave_type,
+        lr.start_date,
+        lr.end_date,
+        lr.reason,
+        lr.status,
+        lr.submitted_at,
+        u.username AS reviewed_by
+      FROM leave_requests lr
+      JOIN employees e ON lr.employee_id = e.id
+      LEFT JOIN users u ON lr.reviewed_by = u.id;
     `);
     const mappedLeaves = rows.map(req => ({
+      id: req.id,
       employee: req.employee_name,
       type: req.leave_type,
       start: req.start_date,
       end: req.end_date,
+      reason: req.reason,
       status: req.status,
       submitted: req.submitted_at,
       reviewedBy: req.reviewed_by ?? '—'
@@ -32,12 +36,11 @@ export const getAllLeaveRequests = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch leave requests' });
   }
 };
-
-// 🔹 GET a single leave request by ID
+// :large_blue_diamond: GET a single leave request by ID
 export const getLeaveRequestById = async (req, res) => {
   const { id } = req.params;
   try {
-    const [rows] = await db.query('SELECT * FROM leave_requests WHERE id = ?', [id]);
+    const [rows] = await pool.query('SELECT * FROM leave_requests WHERE id = ?', [id]);
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -47,14 +50,14 @@ export const getLeaveRequestById = async (req, res) => {
     res.status(500).json({ message: 'Error retrieving leave request' });
   }
 };
-
-// 🔹 CREATE a new leave request
+// :large_blue_diamond: CREATE a new leave request
 export const createLeaveRequest = async (req, res) => {
-  const { employee_id, start_date, end_date, reason } = req.body;
+  const { employee_id, start_date, end_date, reason, leave_type } = req.body;
   try {
-    await db.query(
-      'INSERT INTO leave_requests (employee_id, start_date, end_date, reason, status) VALUES (?, ?, ?, ?, ?)',
-      [employee_id, start_date, end_date, reason, 'pending']
+    await pool.query(
+      `INSERT INTO leave_requests (employee_id, start_date, end_date, reason, leave_type, status)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [employee_id, start_date, end_date, reason, leave_type, 'pending']
     );
     res.status(201).json({ message: 'Leave request submitted' });
   } catch (err) {
@@ -62,13 +65,12 @@ export const createLeaveRequest = async (req, res) => {
     res.status(500).json({ message: 'Error submitting leave request' });
   }
 };
-
-// 🔹 UPDATE leave request status
-export const updateLeaveRequestStatus = async (req, res) => {
+// :large_blue_diamond: UPDATE leave request status
+export const updateLeaveStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
-    const [result] = await db.query(
+    const [result] = await pool.query(
       'UPDATE leave_requests SET status = ? WHERE id = ?',
       [status, id]
     );
@@ -81,12 +83,11 @@ export const updateLeaveRequestStatus = async (req, res) => {
     res.status(500).json({ message: 'Error updating request status' });
   }
 };
-
-// 🔹 DELETE a leave request
+// :large_blue_diamond: DELETE a leave request
 export const deleteLeaveRequest = async (req, res) => {
   const { id } = req.params;
   try {
-    const [result] = await db.query('DELETE FROM leave_requests WHERE id = ?', [id]);
+    const [result] = await pool.query('DELETE FROM leave_requests WHERE id = ?', [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Request not found' });
     }
@@ -96,3 +97,4 @@ export const deleteLeaveRequest = async (req, res) => {
     res.status(500).json({ message: 'Error deleting leave request' });
   }
 };
+

@@ -4,11 +4,23 @@ import {
   getAllLeaveRequests,
   getLeaveRequestById,
   createLeaveRequest,
-  updateLeaveRequestStatus,
+  updateLeaveStatus,
   deleteLeaveRequest
 } from '../controllers/leaveController.js';
 
+
+
+// Avelile
+//backend/routes/leaveRoutes.js
+
+// import { updateLeaveStatus } from '../controllers/leaveController.js';
 const router = express.Router();
+// router.get('/', getAllLeaveRequests);
+router.put('/:id', updateLeaveStatus);
+
+
+
+
 
 // 🔹 GET all leave requests
 router.get('/', getAllLeaveRequests);
@@ -20,7 +32,7 @@ router.get('/:id', getLeaveRequestById);
 router.post('/', createLeaveRequest);
 
 // 🔹 PUT to approve/decline/update status
-router.put('/:id', updateLeaveRequestStatus);
+router.put('/:id', updateLeaveStatus);
 
 // 🔹 DELETE a leave request
 router.delete('/:id', deleteLeaveRequest);
