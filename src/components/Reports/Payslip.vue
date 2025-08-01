@@ -8,22 +8,24 @@
     <hr class="my-3" />
 
     <table class="w-full">
-      <tr>
-        <td>Base Salary:</td>
-        <td class="text-right">{{ formatCurrency(entry.baseSalary) }}</td>
-      </tr>
-      <tr>
-        <td>Bonuses:</td>
-        <td class="text-right">{{ formatCurrency(entry.bonuses) }}</td>
-      </tr>
-      <tr>
-        <td>Deductions:</td>
-        <td class="text-right">{{ formatCurrency(entry.deductions) }}</td>
-      </tr>
-      <tr class="font-bold border-t">
-        <td>Final Salary:</td>
-        <td class="text-right">{{ formatCurrency(entry.finalSalary) }}</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>Base Salary:</td>
+          <td class="text-right">{{ formatCurrency(entry.baseSalary) }}</td>
+        </tr>
+        <tr>
+          <td>Bonuses:</td>
+          <td class="text-right">{{ formatCurrency(entry.bonuses) }}</td>
+        </tr>
+        <tr>
+          <td>Deductions:</td>
+          <td class="text-right">{{ formatCurrency(entry.deductions) }}</td>
+        </tr>
+        <tr class="font-bold border-t">
+          <td>Final Salary:</td>
+          <td class="text-right">{{ formatCurrency(entry.finalSalary) }}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>

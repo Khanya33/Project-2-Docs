@@ -5,7 +5,7 @@
       <div class="col-md-6 col-12">
         <h2 class="mb-4">Employee Directory</h2>
       </div>
-      <!-- Removed the Add Employee button div here -->
+      <!-- Removed Add Employee button div -->
     </div>
 
     <!-- Employee Table -->
@@ -19,6 +19,7 @@
             <th>Salary</th>
             <th>Contact</th>
             <th>Email</th>
+            <th>Edit</th> <!-- Added Edit header -->
           </tr>
         </thead>
         <tbody>
@@ -32,13 +33,16 @@
               <i class="bi bi-envelope me-1"></i>
               <a :href="`mailto:${emp.email_address}`">{{ emp.email_address }}</a>
             </td>
+            <td>
+              <button class="btn btn-sm btn-primary" @click="openEditForm(emp)">Edit</button>
+            </td>
           </tr>
         </tbody>
       </table>
       <p v-else>No employee data available. Please check your connection.</p>
     </div>
 
-    <!-- Modal -->
+    <!-- Add Employee Modal -->
     <div v-if="showModal" class="modal d-block bg-dark bg-opacity-50">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -66,6 +70,43 @@
         </div>
       </div>
     </div>
+
+    <!-- Edit Employee Modal -->
+    <div v-if="showEditModal" class="modal d-block bg-dark bg-opacity-50">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Employee</h5>
+            <button type="button" class="btn-close" @click="closeEditForm"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="submitEdit">
+              <div class="mb-3">
+                <label class="form-label">Department</label>
+                <input v-model="editEmployee.team" type="text" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Salary</label>
+                <input v-model.number="editEmployee.base_salary" type="number" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Contact</label>
+                <input v-model="editEmployee.mobile" type="text" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input v-model="editEmployee.email_address" type="email" class="form-control" />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeEditForm">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -79,6 +120,7 @@ export default {
     return {
       employees: [],
       showModal: false,
+      showEditModal: false,
       newEmployee: {
         employee_name: '',
         job_title: '',
@@ -87,6 +129,7 @@ export default {
         email_address: '',
         mobile: ''
       },
+      editEmployee: {}, // Holds data for editing employee
       userData: {}
     };
   },
@@ -96,17 +139,20 @@ export default {
       this.userData = decodeToken(token);
     }
 
-    // ✅ Fetch and inspect employee data
-    api.get('/employees')
-      .then(response => {
-        this.employees = response.data;
-        console.log('✅ Fetched employees:', this.employees); // 👀 Look in DevTools > Console
-      })
-      .catch(error => {
-        console.error('❌ Error fetching employees:', error);
-      });
+    this.fetchEmployees();
   },
   methods: {
+    fetchEmployees() {
+      api.get('/employees')
+        .then(response => {
+          this.employees = response.data;
+          console.log('✅ Fetched employees:', this.employees);
+        })
+        .catch(error => {
+          console.error('❌ Error fetching employees:', error);
+        });
+    },
+
     addEmployee() {
       api.post('/employees', this.newEmployee)
         .then(response => {
@@ -118,6 +164,7 @@ export default {
           console.error('Error adding employee:', error);
         });
     },
+
     resetForm() {
       this.newEmployee = {
         employee_name: '',
@@ -127,12 +174,51 @@ export default {
         email_address: '',
         mobile: ''
       };
+    },
+
+    openEditForm(employee) {
+      this.editEmployee = { ...employee }; // shallow copy to edit safely
+      this.showEditModal = true;
+    },
+
+    closeEditForm() {
+      this.showEditModal = false;
+      this.editEmployee = {};
+    },
+
+    submitEdit() {
+      // Prepare payload to match your backend keys
+      const payload = {
+        id: this.editEmployee.id,
+        department_id: null, // you may want to map team -> department_id or add dropdown
+        email: this.editEmployee.email_address,
+        contact_number: this.editEmployee.mobile,
+        address: '', // Add if needed or keep empty
+        employment_type: '', // Add if needed
+        salary: this.editEmployee.base_salary
+      };
+
+      api.post('/employees/update', payload)
+        .then(res => {
+          if (res.data.success) {
+            alert('Employee updated!');
+            this.fetchEmployees();
+            this.closeEditForm();
+          } else {
+            alert('Update failed');
+          }
+        })
+        .catch(() => {
+          alert('Update failed');
+        });
     }
   }
 };
 </script>
 
 <style scoped>
+/* Your existing styles... */
+
 .table-responsive {
   background: linear-gradient(135deg, #dd6fd8, #62f2f7);
   border-radius: 10px;
